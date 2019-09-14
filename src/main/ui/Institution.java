@@ -9,6 +9,8 @@ public class Institution {
 
     private int fireAlarms;
 
+    static Scanner scanner = new Scanner(System.in);
+
     public Institution(String n) {
         name = n;
         fireAlarms = 0;
@@ -44,33 +46,38 @@ public class Institution {
         return fireAlarms;
     }
 
+    public void doStuff() {
+        String input;
+
+        while (true) {
+            System.out.println("\ndo something:");
+            input = scanner.nextLine();
+            if (input.equals("stop")) {
+                break;
+            }
+            if (input.equals("fire")) {
+                tripAlarm();
+            }
+            if (input.equals("announce")) {
+                announce("hello");
+            }
+            if (input.equals("info")) {
+                getInfo();
+            }
+        }
+    }
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         String name;
         String input = "";
 
         System.out.println("Institution name:");
         name = scanner.nextLine();
-        Institution ubc = new Institution(name);
-        while (true) {
-            System.out.println("do something:");
-            input = scanner.nextLine();
-            if (input.equals("stop")) {
-                System.out.println();
-                break;
-            }
-            if (input.equals("fire")) {
-                ubc.tripAlarm();
-            }
-            if (input.equals("announce")) {
-                ubc.announce("hello");
-            }
-            if (input.equals("info")) {
-                ubc.getInfo();
-            }
-            System.out.println();
-        }
-        System.out.println("end");
+        Institution inst = new Institution(name);
+
+        inst.doStuff();
+
+        System.out.println("\nend");
     }
 
 }
