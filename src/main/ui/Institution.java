@@ -1,47 +1,58 @@
 package ui;
 
+import java.util.ArrayList;
 import java.util.Scanner;
-// to do: Res class, maybe define constant ring amount for each fire alarm (amt of times ring printed)
 
 public class Institution {
     private String name;
     private String motto;
+    private ArrayList<String> announceLog;
 
     private int fireAlarms;
 
-    static Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
 
     public Institution(String n) {
         name = n;
         fireAlarms = 0;
         motto = "";
+        announceLog = new ArrayList<String>();
         if (n.toLowerCase().equals("ubc")) {
             motto = "Tuum Est";
         }
     }
 
+    // EFFECTS: prints institution name, motto, and number of fire alarms
     public void getInfo() {
         System.out.println("Name: " + name);
         System.out.println("Motto: " + motto);
         System.out.println("Fire Alarms: " + getAlarm());
     }
 
-    public void announce(String a) {
-        System.out.println("PSA: " + a);
+    // MODIFIES: this
+    // EFFECTS:
+    public void announce() {
+        String x;
+        System.out.println("Announce what?:");
+        x = scanner.nextLine();
+        System.out.println("\nPSA: " + x);
+        announceLog.add(x);
     }
 
+    // EFFECTS:
     public void tripAlarm() {
         fireAlarms++;
         ringAlarm(10);
     }
 
+    // EFFECTS:
     public void ringAlarm(int n) {
         for (int i = 0; i < n; i++) {
             System.out.println("ring");
         }
-        System.out.println("over");
     }
 
+    // EFFECTS: returns the number of fire alarms
     public int getAlarm() {
         return fireAlarms;
     }
@@ -50,7 +61,7 @@ public class Institution {
         String input;
 
         while (true) {
-            System.out.println("\ndo something:");
+            System.out.println("\ndo something (fire, announce, info):");
             input = scanner.nextLine();
             if (input.equals("stop")) {
                 break;
@@ -59,7 +70,7 @@ public class Institution {
                 tripAlarm();
             }
             if (input.equals("announce")) {
-                announce("hello");
+                announce();
             }
             if (input.equals("info")) {
                 getInfo();
@@ -70,10 +81,10 @@ public class Institution {
     public static void main(String[] args) {
         String name;
         String input = "";
-
+        Institution inst;
         System.out.println("Institution name:");
         name = scanner.nextLine();
-        Institution inst = new Institution(name);
+        inst = new Institution(name);
 
         inst.doStuff();
 
