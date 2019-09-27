@@ -6,7 +6,7 @@ public class Institution {
     private Building building;
 
     // MODIFIES: this
-    // EFFECTS: the name n of an institution is set. if name is ubc, motto is "Tuum Est"
+    // EFFECTS: the name of an institution is set. if name is ubc, motto is "Tuum Est"
     public Institution(String n) {
         name = n;
         motto = "";

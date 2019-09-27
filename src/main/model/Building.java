@@ -4,11 +4,14 @@ public class Building {
     private String name;
     private int fireAlarms;
 
+    // MODIFIES: this
+    // EFFECTS: the name is set
     public Building(String n) {
         this.name = name;
         fireAlarms = 0;
     }
 
+    // MODIFY: this
     // EFFECTS: changes building name to n
     public void setName(String n) {
         this.name = n;
