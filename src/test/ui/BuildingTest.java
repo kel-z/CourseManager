@@ -1,6 +1,6 @@
 package ui;
 
-import model.Building;
+import model.ResBuilding;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BuildingTest {
-    Building building;
+    ResBuilding building;
 
     @BeforeEach
     public void beforeEach() {
-        building = new Building("building");
+        building = new ResBuilding("building");
     }
 
     @Test

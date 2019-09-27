@@ -3,14 +3,14 @@ package model;
 public class Institution {
     private String name;
     private String motto;
-    private Building building;
+    private ResBuilding building;
 
     // MODIFIES: this
     // EFFECTS: the name of an institution is set. if name is ubc, motto is "Tuum Est"
     public Institution(String n) {
         name = n;
         motto = "";
-        building = new Building("Nest");
+        building = new ResBuilding("Nest");
         if (n.toLowerCase().equals("ubc")) {
             motto = "Tuum Est";
         }
@@ -49,6 +49,6 @@ public class Institution {
 
     // EFFECTS: returns institution name and motto
     public String toString() {
-        return ("Name: " + name) + ("\nMotto: " + motto);
+        return ("Name: " + name) + ("\nMotto: " + motto) + ("\nFire Alarms: " + building.getAlarm());
     }
 }
