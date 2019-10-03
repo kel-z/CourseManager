@@ -24,7 +24,7 @@ public class Institution {
         name = n;
         motto = "";
         building = new ResBuilding("Nest");
-        population = new ArrayList<Person> ();
+        population = new ArrayList<Person>();
 
         if (n.toLowerCase().equals("ubc")) {
             motto = "Tuum Est";
