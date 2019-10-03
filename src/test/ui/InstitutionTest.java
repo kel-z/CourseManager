@@ -4,6 +4,8 @@ import model.Institution;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,7 +42,34 @@ class InstitutionTest {
     }
 
     @Test
+    public void testAddStudent() {
+        assertTrue(inst.addStudent("John"));
+        assertEquals(1, inst.size());
+        inst.addStudent("Bob");
+        inst.addStudent("Mack");
+        assertEquals(3, inst.size());
+    }
+
+    @Test
+    public void testPrintPopulation() {
+        assertTrue(inst.printPopulation());
+    }
+
+    @Test
+    public void testSave() throws IOException {
+        inst.addStudent("John");
+        inst.addStudent("Bob");
+        assertTrue(inst.save("testdata.txt"));
+    }
+
+    @Test
+    public void testLoad() throws IOException {
+        assertTrue(inst.load("testdata.txt"));
+        assertEquals(2, inst.size());
+    }
+
+    @Test
     public void testToString() {
-        assertEquals("Name: ubc\nMotto: Tuum Est", inst.toString());
+        assertEquals("Name: ubc\nMotto: Tuum Est\nFire Alarms: 0", inst.toString());
     }
 }

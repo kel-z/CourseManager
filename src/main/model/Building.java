@@ -8,6 +8,8 @@ public interface Building {
 
     public boolean tripAlarm();
 
+    public boolean ringAlarm(int n);
+
     public int getAlarm();
 
 }
