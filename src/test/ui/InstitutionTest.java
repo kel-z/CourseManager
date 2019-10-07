@@ -43,10 +43,10 @@ class InstitutionTest {
 
     @Test
     public void testAddStudent() {
-        assertTrue(inst.addStudent("John"));
+        assertTrue(inst.addStudent("John", "Henry", 2.2));
         assertEquals(1, inst.size());
-        inst.addStudent("Bob");
-        inst.addStudent("Mack");
+        inst.addStudent("Bob", "Smith", 1.5);
+        inst.addStudent("Mack", "More", 4.0);
         assertEquals(3, inst.size());
     }
 
@@ -57,13 +57,10 @@ class InstitutionTest {
 
     @Test
     public void testSave() throws IOException {
-        inst.addStudent("John");
-        inst.addStudent("Bob");
+        inst.addStudent("John", "Doe", 5.0);
+        inst.addStudent("Bob", "Stog", 3.2);
         assertTrue(inst.save("testdata.txt"));
-    }
 
-    @Test
-    public void testLoad() throws IOException {
         assertTrue(inst.load("testdata.txt"));
         assertEquals(2, inst.size());
     }

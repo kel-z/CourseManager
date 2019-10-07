@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.Double.parseDouble;
+import static java.lang.Double.valueOf;
+
 
 public class Institution {
     private String name;
@@ -63,24 +66,9 @@ public class Institution {
     }
 
     // MODIFIES: this
-    // EFFECTS: takes user input to specify person to population
-    public boolean add() {
-        Scanner scanner = new Scanner(System.in);
-        String input;
-        System.out.println("\nAdd what?");
-        input = scanner.nextLine();
-        if (input.toLowerCase().equals("student")) {
-            System.out.println("\nName:");
-            input = scanner.nextLine();
-            addStudent(input);
-        }
-        return true;
-    }
-
-    // MODIFIES: this
     // EFFECTS: adds a university student person to the population
-    public boolean addStudent(String n) {
-        Person s = new UniversityStudent(n);
+    public boolean addStudent(String firstName, String lastName, double gpa) {
+        Person s = new UniversityStudent(firstName, lastName, gpa);
         population.add(s);
         return true;
     }
@@ -101,7 +89,7 @@ public class Institution {
         return true;
     }
 
-    // REQUIRES: txt file with name f exists
+    // REQUIRES: txt file with name f
     // MODIFIES: txt file with name f
     // EFFECTS: saves population to txt file named f
     public boolean save(String f) throws IOException {
@@ -113,12 +101,17 @@ public class Institution {
         return true;
     }
 
-    // REQUIRES: txt file with name f exists
+    // REQUIRES: txt file with name f
     // EFFECTS: loads population data from txt file named f
     public boolean load(String f) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(f));
         for (String n: lines) {
-            addStudent(n);
+            String first = n.substring(0, n.indexOf(" "));
+            n = n.substring(n.indexOf(" ") + 1);
+            String last = n.substring(0, n.indexOf(" "));
+            n = n.substring(n.indexOf(" ") + 1);
+            double gpa = parseDouble(n);
+            addStudent(first, last, gpa);
         }
         return true;
     }

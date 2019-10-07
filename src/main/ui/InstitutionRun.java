@@ -1,6 +1,9 @@
 package ui;
 
 import model.Institution;
+import model.Person;
+import model.Student;
+import model.UniversityStudent;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -8,10 +11,33 @@ import java.util.Scanner;
 public class InstitutionRun {
     Scanner scanner;
     String input;
+    Institution inst;
 
     public InstitutionRun() {
         input = "";
-        scanner = new Scanner(System.in);;
+        scanner = new Scanner(System.in);
+        System.out.println("Institution name:");
+        inst = new Institution(scanner.nextLine());
+    }
+
+    // MODIFIES: inst
+    // EFFECTS: takes user input to specify person to add to population
+    public boolean add() {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        System.out.println("\nAdd what?");
+        input = scanner.nextLine();
+        if (input.toLowerCase().equals("student")) {
+            System.out.println("\nFirst name: ");
+            String firstName = scanner.nextLine();
+            System.out.println("\nLast name: ");
+            String lastName = scanner.nextLine();
+            System.out.println("\ngpa: ");
+            double gpa = scanner.nextDouble();
+            scanner.nextLine();
+            inst.addStudent(firstName, lastName, gpa);
+        }
+        return true;
     }
 
     // EFFECTS: reads user input to perform tasks
@@ -29,7 +55,7 @@ public class InstitutionRun {
             } else if (input.equals("fire")) {
                 i.fire();
             } else if (input.equals("add")) {
-                i.add();
+                add();
             } else {
                 System.out.println("invalid option!");
             }
@@ -43,14 +69,11 @@ public class InstitutionRun {
 
         InstitutionRun ins = new InstitutionRun();
 
-        System.out.println("Institution name:");
-        name = scanner.nextLine();
-        Institution inst = new Institution(name);
-        inst.load("data.txt");
 
-        ins.run(inst);
+        ins.inst.load("data.txt");
 
-        inst.printPopulation();
+        ins.run(ins.inst);
+        ins.inst.printPopulation();
         System.out.println("\nend");
     }
 }

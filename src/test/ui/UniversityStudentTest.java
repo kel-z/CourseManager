@@ -12,7 +12,7 @@ public class UniversityStudentTest {
     UniversityStudent stud;
     @BeforeEach
     public void beforeEach() {
-        stud = new UniversityStudent("John");
+        stud = new UniversityStudent("John", "Mulaney", 0.0);
     }
 
     @Test

@@ -4,6 +4,6 @@ public interface Student {
 
     public boolean study();
 
-    public boolean sleep();
+    public void sleep();
 
 }
