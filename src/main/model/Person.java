@@ -21,6 +21,11 @@ public abstract class Person {
 
     public abstract void sleep();
 
+    // getter
+    public boolean isSleeping() {
+        return isSleeping;
+    }
+
     public String toString() {
         return firstName + ", " + lastName;
     }

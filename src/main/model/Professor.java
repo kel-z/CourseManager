@@ -8,12 +8,15 @@ public class Professor extends Person {
         this.subject = subject;
     }
 
+    // EFFECTS: prints a greeting
     public String greet() {
         String greeting = "Hello. My name is Dr. " + lastName;
         System.out.println(greeting);
         return greeting;
     }
 
+    // MODIFY: this
+    // EFFECTS: set professor to sleep
     public void sleep() {
         isSleeping = true;
     }

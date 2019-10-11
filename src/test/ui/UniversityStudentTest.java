@@ -17,20 +17,20 @@ public class UniversityStudentTest {
 
     @Test
     public void testGreet() {
-        String greeting = "Hi! My name is John.";
+        String greeting = "Hi! My name is John!";
         assertEquals(greeting, stud.greet());
     }
 
     @Test
     public void testGoodbye() {
-        String goodbye = "I'll see you later.";
+        String goodbye = "I'll see you later";
         assertEquals(goodbye, stud.goodbye());
     }
 
     @Test
     public void testSleep() {
-        assertTrue(stud.sleep());
-        assertFalse(stud.sleep());
+        stud.sleep();
+        assertTrue(stud.isSleeping());
     }
 
     @Test
