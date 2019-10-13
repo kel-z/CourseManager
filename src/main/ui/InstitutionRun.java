@@ -20,6 +20,20 @@ public class InstitutionRun {
         inst = new Institution(scanner.nextLine());
     }
 
+    // MODIFIES: this
+    // EFFECTS: takes user input to add a professor
+    public void addProf() {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        System.out.println("\nFirst name: ");
+        String firstName = scanner.nextLine();
+        System.out.println("\nLast name: ");
+        String lastName = scanner.nextLine();
+        System.out.println("\nSubject: ");
+        String subject = scanner.nextLine();
+        inst.addProf(firstName, lastName, subject);
+    }
+
     // MODIFIES: inst
     // EFFECTS: takes user input to specify person to add to population
     public boolean add() {
@@ -36,6 +50,8 @@ public class InstitutionRun {
             double gpa = scanner.nextDouble();
             scanner.nextLine();
             inst.addStudent(firstName, lastName, gpa);
+        } else if (input.toLowerCase().equals("professor")) {
+            addProf();
         }
         return true;
     }
@@ -46,7 +62,7 @@ public class InstitutionRun {
             System.out.println("\ndo something:");
             input = scanner.nextLine();
             if (input.equals("stop")) {
-                i.save("data.txt");
+                // i.save("data.txt");  // TODO: fix save to work with professor class
                 break;
             } else if (input.equals("announce")) {
                 System.out.println(i.announce("hello"));
@@ -70,7 +86,7 @@ public class InstitutionRun {
         InstitutionRun ins = new InstitutionRun();
 
 
-        ins.inst.load("data.txt");
+        // ins.inst.load("data.txt"); // TODO: fix load to work with professor class
 
         ins.run(ins.inst);
         ins.inst.printPopulation();

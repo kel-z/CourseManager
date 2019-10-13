@@ -40,8 +40,7 @@ public class UniversityStudent extends Person implements Student  {
         return true;
     }
 
-    // getter
     public String toString() {
-        return firstName + " " + lastName + " " + gpa;
+        return firstName + " " + lastName + ", " + gpa;
     }
 }

@@ -21,4 +21,7 @@ public class Professor extends Person {
         isSleeping = true;
     }
 
+    public String toString() {
+        return "Dr. " + firstName + " " + lastName + ", " + subject;
+    }
 }

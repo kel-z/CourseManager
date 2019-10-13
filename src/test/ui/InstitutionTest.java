@@ -51,6 +51,15 @@ class InstitutionTest {
     }
 
     @Test
+    public void testAddProf() {
+        inst.addProf("John", "Henry", "Math");
+        assertEquals(1, inst.size());
+        inst.addProf("Bob", "Smith", "Math");
+        inst.addProf("Mack", "More", "Math");
+        assertEquals(3, inst.size());
+    }
+
+    @Test
     public void testPrintPopulation() {
         assertTrue(inst.printPopulation());
     }

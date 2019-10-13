@@ -116,6 +116,13 @@ public class Institution {
         return true;
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds a professor to the population
+    public void addProf(String fn, String ln, String sub) {
+        Professor p = new Professor(fn, ln, sub);
+        population.add(p);
+    }
+
     // EFFECTS: returns institution name and motto
     public String toString() {
         return ("Name: " + name) + ("\nMotto: " + motto) + ("\nFire Alarms: " + building.getAlarm());
