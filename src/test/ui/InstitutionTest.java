@@ -1,14 +1,13 @@
 package ui;
 
+import exceptions.MaxCapacityException;
 import model.Institution;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class InstitutionTest {
     private Institution inst;
@@ -42,7 +41,7 @@ class InstitutionTest {
     }
 
     @Test
-    public void testAddStudent() {
+    public void testAddStudent() throws MaxCapacityException {
         assertTrue(inst.addStudent("John", "Henry", 2.2));
         assertEquals(1, inst.size());
         inst.addStudent("Bob", "Smith", 1.5);
@@ -51,7 +50,7 @@ class InstitutionTest {
     }
 
     @Test
-    public void testAddProf() {
+    public void testAddProf() throws MaxCapacityException {
         inst.addProf("John", "Henry", "Math");
         assertEquals(1, inst.size());
         inst.addProf("Bob", "Smith", "Math");
@@ -60,18 +59,44 @@ class InstitutionTest {
     }
 
     @Test
+    public void testAddProfException() {
+        try {
+            for (int i = 0; i<50001; i++) {
+                inst.addProf("a", "b", "math");
+            }
+            fail("Did not go beyond max capacity.");
+        } catch (MaxCapacityException e) {
+            System.out.println("Great!");
+        }
+    }
+
+    @Test
+    public void testAddStudException() {
+        try {
+            for (int i = 0; i<50001; i++) {
+                inst.addStudent("a", "b", 2.0);
+            }
+            fail("Did not go beyond max capacity.");
+        } catch (MaxCapacityException e) {
+            System.out.println("Great!");
+        }
+    }
+
+    @Test
     public void testPrintPopulation() {
         assertTrue(inst.printPopulation());
     }
 
     @Test
-    public void testSave() throws IOException {
+    public void testSave() throws IOException, MaxCapacityException {
         inst.addStudent("John", "Doe", 5.0);
         inst.addStudent("Bob", "Stog", 3.2);
+        inst.addProf("Jack", "Dan", "Math");
         assertTrue(inst.save("testdata.txt"));
-
-        assertTrue(inst.load("testdata.txt"));
-        assertEquals(2, inst.size());
+        Institution inst2 = new Institution("ubc");
+        assertTrue(inst2.load("testdata.txt"));
+        assertEquals(3, inst2.size());
+        inst2.printPopulation();
     }
 
     @Test

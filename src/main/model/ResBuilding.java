@@ -7,7 +7,7 @@ public class ResBuilding implements Building {
     // MODIFIES: this
     // EFFECTS: the name is set
     public ResBuilding(String n) {
-        this.name = name;
+        this.name = n;
         fireAlarms = 0;
     }
 

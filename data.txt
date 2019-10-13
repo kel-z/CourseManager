@@ -1,1 +1,2 @@
-John Bob 4.0
+STUD John Mackay 3.5
+PROF John Davis Math

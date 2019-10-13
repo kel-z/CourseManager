@@ -1,7 +1,7 @@
 package model;
 
 public class UniversityStudent extends Person implements Student  {
-    private double gpa;
+    protected double gpa;
     private boolean isStudying;
 
     public UniversityStudent(String firstName, String lastName, double gpa) {

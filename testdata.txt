@@ -1,2 +1,3 @@
-John
-Bob
+STUD John Doe 5.0
+STUD Bob Stog 3.2
+PROF Jack Dan Math

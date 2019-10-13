@@ -1,7 +1,7 @@
 package model;
 
 public class Professor extends Person {
-    private String subject;
+    protected String subject;
 
     public Professor(String firstName, String lastName, String subject) {
         super(firstName, lastName);
