@@ -2,8 +2,10 @@ package ui;
 
 import exceptions.InvOptionException;
 import exceptions.InvPersonException;
+import exceptions.InvSubjectException;
 import exceptions.MaxCapacityException;
 import model.Institution;
+import model.Subject;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -32,10 +34,13 @@ public class InstitutionRun {
         System.out.println("\nLast name: ");
         String lastName = scanner.nextLine();
         System.out.println("\nSubject: ");
-        String subject = scanner.nextLine();
+        String input = scanner.nextLine();
+        Subject subject = inst.subjectGet(input);
         inst.addProf(firstName, lastName, subject);
     }
 
+    // MODIFIES: this
+    // EFFECTS: takes user input to add a student
     public void addStud() throws MaxCapacityException {
         System.out.println("\nFirst name: ");
         String firstName = scanner.nextLine();
@@ -51,10 +56,10 @@ public class InstitutionRun {
     // EFFECTS: takes user input to specify person to add to population
     public boolean add() throws InvPersonException, MaxCapacityException {
         System.out.println("\nAdd what?");
-        input = scanner.nextLine();
-        if (input.toLowerCase().equals("student")) {
+        input = scanner.nextLine().toLowerCase();
+        if (input.equals("student")) {
             addStud();
-        } else if (input.toLowerCase().equals("professor")) {
+        } else if (input.equals("professor")) {
             addProf();
         } else {
             throw new InvPersonException();
@@ -62,17 +67,42 @@ public class InstitutionRun {
         return true;
     }
 
+    public void remove() throws InvPersonException {
+        System.out.println("\nRemove what?");
+        input = scanner.nextLine().toLowerCase();
+        if (input.equals("professor")) {
+            System.out.println("\nRemove who? (first name)");
+            input = scanner.nextLine().toLowerCase();
+            inst.removeProf(input);
+        }
+    }
+
+    // MODIFIES: inst
+    // EFFECTS: takes user input to get info
+    public void info() throws InvSubjectException {
+        System.out.println("\nGet what?");
+        input = scanner.nextLine().toLowerCase();
+        if (input.equals("info")) {
+            System.out.println(inst);
+        } else if (input.equals("subject")) {
+            System.out.println("\nWhich subject?");
+            input = scanner.nextLine();
+            inst.getSubjectList(input);
+        }
+    }
+
     // EFFECTS: reads user input to perform tasks
-    public void run(Institution i) throws IOException, InvPersonException, InvOptionException, MaxCapacityException {
-        System.out.println("\ndo something:");
-        input = scanner.nextLine();
+    public void run(Institution i) throws IOException, InvPersonException, InvOptionException,
+            MaxCapacityException, InvSubjectException {
+        System.out.println("\nDo something:");
+        input = scanner.nextLine().toLowerCase();
         if (input.equals("stop")) {
             i.save("data.txt");
             flag = false;
-        } else if (input.equals("announce")) {
-            System.out.println(i.announce("hello"));
+        } else if (input.equals("remove")) {
+            remove();
         } else if (input.equals("info")) {
-            System.out.println(i);
+            info();
         } else if (input.equals("fire")) {
             i.fire();
         } else if (input.equals("add")) {
@@ -83,18 +113,17 @@ public class InstitutionRun {
     }
 
     public static void main(String[] args) throws IOException, MaxCapacityException {
-        String name;
         InstitutionRun ins = new InstitutionRun();
         ins.inst.load("data.txt");
         while (ins.flag) {
             try {
                 ins.run(ins.inst);
-            } catch (InvPersonException e) {
-                System.out.println("Invalid person!");
-            } catch (InvOptionException e) {
-                System.out.println("Invalid option!");
             } catch (MaxCapacityException e) {
                 System.out.println("Capacity maxed!");
+            } catch (InvSubjectException e) {
+                System.out.println("No professors for subject!");
+            } catch (Exception e) {
+                System.out.println("Invalid option!");
             } finally {
                 ins.iterations++;
             }

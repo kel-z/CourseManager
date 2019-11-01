@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.InvPersonException;
+import exceptions.InvSubjectException;
 import exceptions.MaxCapacityException;
 
 import java.util.ArrayList;
@@ -8,7 +10,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
@@ -19,7 +23,8 @@ public class Institution {
     private String motto;
     private ResBuilding building;
     private ArrayList<UniversityStudent> studPopulation;
-    private ArrayList<Professor> profPopulation;
+    private ArrayList<Subject> subjects;
+    private Map<Subject, ArrayList<Professor>> subjectList;
     private static final int MAX_POPULATION = 50000;
 
     // MODIFIES: this
@@ -29,7 +34,8 @@ public class Institution {
         motto = "";
         building = new ResBuilding("Nest");
         studPopulation = new ArrayList<UniversityStudent>();
-        profPopulation = new ArrayList<Professor>();
+        subjects = new ArrayList<Subject>();
+        subjectList = new HashMap<>();
 
         if (n.toLowerCase().equals("ubc")) {
             motto = "Tuum Est";
@@ -62,15 +68,10 @@ public class Institution {
         return this.motto;
     }
 
-    // EFFECTS: a given string is announced
-    public String announce(String a) {
-        return ("PSA: " + a);
-    }
-
     // MODIFIES: this
     // EFFECTS: adds a university student person to the population
     public boolean addStudent(String firstName, String lastName, double gpa) throws MaxCapacityException {
-        if (profPopulation.size() + studPopulation.size() == MAX_POPULATION) {
+        if (size() == MAX_POPULATION) {
             throw new MaxCapacityException();
         } else {
             UniversityStudent s = new UniversityStudent(firstName, lastName, gpa);
@@ -82,7 +83,7 @@ public class Institution {
     // EFFECTS: print out the names of everyone in population
     public boolean printPopulation() {
         int i = 1;
-        System.out.println("\nInstitution population:");
+        System.out.println("\nInstitution population: " + size());
         System.out.println("Students:");
         for (Student p:studPopulation) {
             System.out.println(i + ". " + p);
@@ -90,28 +91,40 @@ public class Institution {
         }
         i = 1;
         System.out.println("Staff:");
-        for (Professor p:profPopulation) {
-            System.out.println(i + ". " + p);
-            i++;
+        for (Subject s : subjects) {
+            for (Professor p : subjectList.get(s)) {
+                System.out.println(i + ". " + p);
+                i++;
+            }
         }
         return true;
     }
 
     // EFFECTS: return total population
     public int size() {
-        return studPopulation.size() + profPopulation.size();
+        int numProfs = 0;
+        for (Subject s : subjects) {
+            ArrayList<Professor> profs = subjectList.get(s);
+            for (Professor p : profs) {
+                numProfs++;
+            }
+        }
+        return studPopulation.size() + numProfs;
     }
 
     // REQUIRES: txt file with name f
     // MODIFIES: txt file with name f
     // EFFECTS: saves population to txt file named f
     public boolean save(String f) throws IOException {
-        PrintWriter writer = new PrintWriter(f,"UTF-8");
+        //PrintWriter writer = new PrintWriter(f,"UTF-8");
+        PrintWriter writer = new PrintWriter(".\\src\\main\\data\\" + f,"UTF-8");
         for (UniversityStudent s:studPopulation) {
             writer.println("STUD " + s.firstName + " " + s.lastName + " " + s.gpa);
         }
-        for (Professor p:profPopulation) {
-            writer.println("PROF " + p.firstName + " " + p.lastName + " " + p.subject);
+        for (Subject s : subjects) {
+            for (Professor p : subjectList.get(s)) {
+                writer.println("PROF " + p.firstName + " " + p.lastName + " " + p.subject);
+            }
         }
         writer.close();
         return true;
@@ -120,7 +133,7 @@ public class Institution {
     // REQUIRES: txt file with name f
     // EFFECTS: loads population data from txt file named f
     public boolean load(String f) throws IOException, MaxCapacityException {
-        List<String> lines = Files.readAllLines(Paths.get(f));
+        List<String> lines = Files.readAllLines(Paths.get(".\\src\\main\\data\\" + f));
         for (String n: lines) {
             String pre = n.substring(0, n.indexOf(" "));
             n = n.substring(n.indexOf(" ") + 1);
@@ -132,7 +145,8 @@ public class Institution {
                 double gpa = parseDouble(n);
                 addStudent(first, last, gpa);
             } else {
-                addProf(first, last, n);
+                Subject subject = subjectGet(n);
+                addProf(first, last, subject);
             }
         }
         return true;
@@ -140,13 +154,60 @@ public class Institution {
 
     // MODIFIES: this
     // EFFECTS: adds a professor to the population
-    public void addProf(String fn, String ln, String sub) throws MaxCapacityException {
-        if (studPopulation.size() + profPopulation.size() == MAX_POPULATION) {
+    public void addProf(String fn, String ln, Subject sub) throws MaxCapacityException {
+        if (size() == MAX_POPULATION) {
             throw new MaxCapacityException();
         } else {
             Professor p = new Professor(fn, ln, sub);
-            profPopulation.add(p);
+            if (!subjectList.containsKey(sub)) {
+                ArrayList<Professor> prof = new ArrayList<Professor>();
+                prof.add(p);
+                subjects.add(sub);
+                subjectList.put(sub, prof);
+            } else {
+                ArrayList<Professor> prof = subjectList.get(sub);
+                prof.add(p);
+            }
+            sub.addProf(p);
         }
+    }
+
+    // REQUIRES: no professor has the same first name
+    // MODIFIES: this
+    // EFFECTS: removes professor given first name
+    public void removeProf(String fn) throws InvPersonException {
+        for (Subject s : subjects) {
+            ArrayList<Professor> profs = subjectList.get(s);
+            for (Professor p : profs) {
+                if (p.firstName.toLowerCase().equals(fn.toLowerCase())) {
+                    System.out.println((p.getSubject().numProfs() - 1) + " professors teach "
+                            + p.getSubject().getSubject() + " now.");
+                    profs.remove(p);
+                    return;
+                }
+            }
+        }
+        throw new InvPersonException();
+    }
+
+    public Subject subjectGet(String sub) {
+        for (Subject s : subjects) {
+            if (s.getSubject().toLowerCase().equals(sub.toLowerCase())) {
+                return s;
+            }
+        }
+        return new Subject(sub);
+    }
+
+    // EFFECTS: print out professors that specialize in a given subject
+    public void getSubjectList(String sub) throws InvSubjectException {
+        for (Subject s : subjects) {
+            if (s.getSubject().toLowerCase().equals(sub.toLowerCase())) {
+                s.printProf();
+                return;
+            }
+        }
+        throw new InvSubjectException();
     }
 
     // EFFECTS: returns institution name and motto

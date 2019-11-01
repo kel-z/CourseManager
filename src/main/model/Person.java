@@ -6,8 +6,8 @@ public abstract class Person {
     protected boolean isSleeping;
 
     public Person(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstName = firstName.substring(0, 1).toUpperCase() + firstName.toLowerCase().substring(1);
+        this.lastName = lastName.substring(0, 1).toUpperCase() + lastName.toLowerCase().substring(1);
         this.isSleeping = false;
     }
 
