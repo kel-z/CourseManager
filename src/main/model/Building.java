@@ -6,10 +6,4 @@ public interface Building {
 
     public String getName();
 
-    public boolean tripAlarm();
-
-    public boolean ringAlarm(int n);
-
-    public int getAlarm();
-
 }

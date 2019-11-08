@@ -67,19 +67,21 @@ public class InstitutionRun {
         return true;
     }
 
-    public void remove() throws InvPersonException {
+    public void remove() throws InvPersonException, InvOptionException {
         System.out.println("\nRemove what?");
         input = scanner.nextLine().toLowerCase();
         if (input.equals("professor")) {
             System.out.println("\nRemove who? (first name)");
             input = scanner.nextLine().toLowerCase();
             inst.removeProf(input);
+        } else {
+            throw new InvOptionException();
         }
     }
 
     // MODIFIES: inst
     // EFFECTS: takes user input to get info
-    public void info() throws InvSubjectException {
+    public void info() throws InvSubjectException, InvOptionException {
         System.out.println("\nGet what?");
         input = scanner.nextLine().toLowerCase();
         if (input.equals("info")) {
@@ -88,6 +90,8 @@ public class InstitutionRun {
             System.out.println("\nWhich subject?");
             input = scanner.nextLine();
             inst.getSubjectList(input);
+        } else {
+            throw new InvOptionException();
         }
     }
 

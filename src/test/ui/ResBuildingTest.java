@@ -24,15 +24,10 @@ class ResBuildingTest {
 
     @Test
     public void testTripAlarm() {
-        assertTrue(building.tripAlarm());
+        assertTrue(building.fire());
         assertEquals(1, building.getAlarm());
-        building.tripAlarm();
-        building.tripAlarm();
+        building.fire();
+        building.fire();
         assertEquals(3, building.getAlarm());
-    }
-
-    @Test
-    public void testRingAlarm() {
-        assertTrue(building.ringAlarm(10));
     }
 }

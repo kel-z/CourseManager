@@ -15,7 +15,10 @@ public class Subject {
     // MODIFIES: this
     // EFFECTS: adds p to list of professors who teach the subject
     public void addProf(Professor p) {
-        profs.add(p);
+        if (!profs.contains(p)) {
+            profs.add(p);
+            p.setSubject(this);
+        }
     }
 
     // EFFECTS: returns the number of profs who teach the subject
@@ -31,6 +34,16 @@ public class Subject {
             System.out.println(p);
         }
         return s;
+    }
+
+    // REQUIRES: prof teaches subject
+    // MODIFIES: this
+    // EFFECTS: removes p from profs who teach the subject
+    public void removeProf(Professor p) {
+        if (profs.contains(p)) {
+            profs.remove(p);
+            p.clearSubject();
+        }
     }
 
     // EFFECTS: return subject name

@@ -44,7 +44,7 @@ public class Institution {
 
     // EFFECTS: trigger fire alarm in building
     public Boolean fire() {
-        return building.tripAlarm();
+        return building.fire();
     }
 
     // EFFECTS: return number of fire alarms in building
@@ -169,6 +169,7 @@ public class Institution {
                 prof.add(p);
             }
             sub.addProf(p);
+            //System.out.println(subjectList);
         }
     }
 
@@ -180,9 +181,10 @@ public class Institution {
             ArrayList<Professor> profs = subjectList.get(s);
             for (Professor p : profs) {
                 if (p.firstName.toLowerCase().equals(fn.toLowerCase())) {
-                    System.out.println((p.getSubject().numProfs() - 1) + " professors teach "
-                            + p.getSubject().getSubject() + " now.");
+                    System.out.println((p.getSubject().numProfs() - 1) + " people teach "
+                            + p.getSubject().getSubject().toLowerCase() + " now.");
                     profs.remove(p);
+                    s.removeProf(p);
                     return;
                 }
             }

@@ -1,2 +1,4 @@
-STUD Mark John 5.0
-PROF John Mark English
+STUD Steven Smith 5.0
+PROF Cc Cc Math
+PROF Dd Dd Math
+PROF Bb Bb English
