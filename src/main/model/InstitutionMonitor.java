@@ -21,7 +21,7 @@ public class InstitutionMonitor implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        //System.out.println("Change detected!");
+        System.out.println("***population change***");
         if (arg.equals("addS")) {
             addedStud++;
         } else if (arg.equals("addP")) {

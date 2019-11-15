@@ -1,3 +1,6 @@
 STUD Steven Smith 5.0
+STUD Mmm Mmm 5.0
 PROF Cc Cc Math
+PROF Aa Bb Math
+PROF Dd Dd Math
 PROF Bb Bb English

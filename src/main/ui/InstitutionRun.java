@@ -7,6 +7,7 @@ import exceptions.MaxCapacityException;
 import model.Institution;
 import model.InstitutionMonitor;
 import model.Subject;
+import network.WebMessage;
 
 import java.io.IOException;
 import java.util.Observer;
@@ -17,16 +18,13 @@ public class InstitutionRun {
     String input;
     Institution inst;
     Boolean flag;
-    int iterations;
 
-    public InstitutionRun(InstitutionMonitor observer) throws IOException {
+    public InstitutionRun(InstitutionMonitor observer) {
         input = "";
         scanner = new Scanner(System.in);
         System.out.println("Institution name:");
         inst = new Institution(scanner.nextLine(), observer);
-        inst.welcome();
         flag = true;
-        iterations = 0;
     }
 
     // MODIFIES: this
@@ -120,9 +118,10 @@ public class InstitutionRun {
     }
 
     public static void main(String[] args) throws IOException, MaxCapacityException {
+        WebMessage web = new WebMessage();
+        web.welcome();
         InstitutionMonitor observer = new InstitutionMonitor();
         InstitutionRun ins = new InstitutionRun(observer);
-
         ins.inst.load("data.txt");
         while (ins.flag) {
             try {
@@ -133,8 +132,6 @@ public class InstitutionRun {
                 System.out.println("No professors for subject!");
             } catch (Exception e) {
                 System.out.println("Invalid option!");
-            } finally {
-                ins.iterations++;
             }
         }
         ins.inst.printPopulation();
