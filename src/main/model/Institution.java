@@ -178,21 +178,20 @@ public class Institution extends Observable {
         if (size() == MAX_POPULATION) {
             throw new MaxCapacityException();
         } else {
-            Professor p = new Professor(fn, ln, sub);
             if (!subjectList.containsKey(sub)) {
                 ArrayList<Professor> prof = new ArrayList<Professor>();
-                prof.add(p);
+                prof.add(new Professor(fn, ln, sub));
                 subjects.add(sub);
                 subjectList.put(sub, prof);
             } else {
                 ArrayList<Professor> prof = subjectList.get(sub);
-                prof.add(p);
+                prof.add(new Professor(fn, ln, sub));
             }
             if (!loading) {
                 setChanged();
                 notifyObservers("addP");
             }
-            sub.addProf(p);
+            sub.addProf(new Professor(fn, ln, sub));
             //System.out.println(subjectList);
         }
     }
