@@ -4,23 +4,23 @@ import exceptions.InvPersonException;
 import exceptions.InvSubjectException;
 import exceptions.MaxCapacityException;
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Double.valueOf;
 
 
-public class Institution {
+public class Institution extends Observable {
+    boolean loading;
     private String name;
-    private String motto;
     private ResBuilding building;
     private ArrayList<UniversityStudent> studPopulation;
     private ArrayList<Subject> subjects;
@@ -29,16 +29,42 @@ public class Institution {
 
     // MODIFIES: this
     // EFFECTS: the name of an institution is set. if name is ubc, motto is "Tuum Est"
-    public Institution(String n) {
+    public Institution(String n, InstitutionMonitor obs) {
         name = n;
-        motto = "";
         building = new ResBuilding("Nest");
         studPopulation = new ArrayList<UniversityStudent>();
         subjects = new ArrayList<Subject>();
         subjectList = new HashMap<>();
+        loading = true;
+        addObserver(obs);
+    }
 
-        if (n.toLowerCase().equals("ubc")) {
-            motto = "Tuum Est";
+    // EFFECTS: prints out string from web
+    public void welcome() throws IOException {
+        // as instructed, code quoted from: http://zetcode.com/articles/javareadwebpage/
+        BufferedReader br = null;
+
+        try {
+            String theURL = "https://www.students.cs.ubc.ca/~cs-210/2018w1/welcomemsg.html"; //this can point to any URL
+            URL url = new URL(theURL);
+            br = new BufferedReader(new InputStreamReader(url.openStream()));
+
+            String line;
+
+            StringBuilder sb = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+
+                sb.append(line);
+                sb.append(System.lineSeparator());
+            }
+
+            System.out.println(sb.substring(0, sb.length() - 14));
+        } finally {
+
+            if (br != null) {
+                br.close();
+            }
         }
     }
 
@@ -58,17 +84,6 @@ public class Institution {
     }
 
     // MODIFIES: this
-    // EFFECTS: sets motto of institution to m
-    public void setMotto(String m) {
-        this.motto = m;
-    }
-
-    // EFFECTS: returns the institution's motto
-    public String getMotto() {
-        return this.motto;
-    }
-
-    // MODIFIES: this
     // EFFECTS: adds a university student person to the population
     public boolean addStudent(String firstName, String lastName, double gpa) throws MaxCapacityException {
         if (size() == MAX_POPULATION) {
@@ -76,6 +91,10 @@ public class Institution {
         } else {
             UniversityStudent s = new UniversityStudent(firstName, lastName, gpa);
             studPopulation.add(s);
+            if (!loading) {
+                setChanged();
+                notifyObservers("addS");
+            }
         }
         return true;
     }
@@ -149,6 +168,7 @@ public class Institution {
                 addProf(first, last, subject);
             }
         }
+        loading = false;
         return true;
     }
 
@@ -168,6 +188,10 @@ public class Institution {
                 ArrayList<Professor> prof = subjectList.get(sub);
                 prof.add(p);
             }
+            if (!loading) {
+                setChanged();
+                notifyObservers("addP");
+            }
             sub.addProf(p);
             //System.out.println(subjectList);
         }
@@ -185,6 +209,8 @@ public class Institution {
                             + p.getSubject().getSubject().toLowerCase() + " now.");
                     profs.remove(p);
                     s.removeProf(p);
+                    setChanged();
+                    notifyObservers("removeP");
                     return;
                 }
             }
@@ -214,6 +240,6 @@ public class Institution {
 
     // EFFECTS: returns institution name and motto
     public String toString() {
-        return ("Name: " + name) + ("\nMotto: " + motto) + ("\nFire Alarms: " + building.getAlarm());
+        return ("Name: " + name) + ("\nFire Alarms: " + building.getAlarm());
     }
 }

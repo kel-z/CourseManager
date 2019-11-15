@@ -5,9 +5,11 @@ import exceptions.InvPersonException;
 import exceptions.InvSubjectException;
 import exceptions.MaxCapacityException;
 import model.Institution;
+import model.InstitutionMonitor;
 import model.Subject;
 
 import java.io.IOException;
+import java.util.Observer;
 import java.util.Scanner;
 
 public class InstitutionRun {
@@ -17,11 +19,12 @@ public class InstitutionRun {
     Boolean flag;
     int iterations;
 
-    public InstitutionRun() {
+    public InstitutionRun(InstitutionMonitor observer) throws IOException {
         input = "";
         scanner = new Scanner(System.in);
         System.out.println("Institution name:");
-        inst = new Institution(scanner.nextLine());
+        inst = new Institution(scanner.nextLine(), observer);
+        inst.welcome();
         flag = true;
         iterations = 0;
     }
@@ -117,7 +120,9 @@ public class InstitutionRun {
     }
 
     public static void main(String[] args) throws IOException, MaxCapacityException {
-        InstitutionRun ins = new InstitutionRun();
+        InstitutionMonitor observer = new InstitutionMonitor();
+        InstitutionRun ins = new InstitutionRun(observer);
+
         ins.inst.load("data.txt");
         while (ins.flag) {
             try {
@@ -133,6 +138,6 @@ public class InstitutionRun {
             }
         }
         ins.inst.printPopulation();
-        System.out.println("\nend");
+        observer.printStats();
     }
 }

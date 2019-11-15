@@ -1,4 +1,3 @@
 STUD Steven Smith 5.0
 PROF Cc Cc Math
-PROF Dd Dd Math
 PROF Bb Bb English

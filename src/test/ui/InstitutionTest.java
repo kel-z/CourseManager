@@ -4,6 +4,7 @@ import exceptions.InvPersonException;
 import exceptions.InvSubjectException;
 import exceptions.MaxCapacityException;
 import model.Institution;
+import model.InstitutionMonitor;
 import model.Subject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ class InstitutionTest {
     private Institution inst;
     @BeforeEach
     public void beforeEach() {
-        inst = new Institution("ubc");
+        inst = new Institution("ubc", new InstitutionMonitor());
     }
 
     @Test
@@ -26,14 +27,6 @@ class InstitutionTest {
         inst.fire();
         inst.fire();
         assertEquals(3, inst.getAlarms());
-    }
-
-    @Test
-    public void testSetMotto() {
-        Institution inst0 = new Institution("ubyssey");
-        assertEquals("", inst0.getMotto());
-        inst0.setMotto("String");
-        assertEquals("String", inst0.getMotto());
     }
 
     @Test
@@ -138,7 +131,7 @@ class InstitutionTest {
         inst.addStudent("Bob", "Stog", 3.2);
         inst.addProf("Jack", "Dan", math);
         assertTrue(inst.save("testdata.txt"));
-        Institution inst2 = new Institution("ubc");
+        Institution inst2 = new Institution("ubc", new InstitutionMonitor());
         assertTrue(inst2.load("testdata.txt"));
         assertEquals(3, inst2.size());
         inst2.printPopulation();
@@ -146,6 +139,6 @@ class InstitutionTest {
 
     @Test
     public void testToString() {
-        assertEquals("Name: ubc\nMotto: Tuum Est\nFire Alarms: 0", inst.toString());
+        assertEquals("Name: ubc\nFire Alarms: 0", inst.toString());
     }
 }
