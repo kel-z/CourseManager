@@ -4,12 +4,17 @@ import exceptions.InvOptionException;
 import exceptions.InvPersonException;
 import exceptions.InvSubjectException;
 import exceptions.MaxCapacityException;
+import javafx.scene.layout.BorderPaneBuilder;
 import model.Institution;
 import model.InstitutionMonitor;
 import model.Subject;
 import network.WebMessage;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Observer;
 import java.util.Scanner;
@@ -19,14 +24,138 @@ public class InstitutionRun extends JFrame {
     String input;
     Institution inst;
     Boolean flag;
+    private JTextArea inputGUI;
+    private JLabel status;
+    private JButton advanceButton;
 
-    public InstitutionRun(String title, InstitutionMonitor observer) {
-        super(title);
+    private JPanel leftPanel;
+
+    public InstitutionRun(InstitutionMonitor observer) {
+        super("Institution");
+        setMinimumSize(new Dimension(500, 100));
+
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
+        leftPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(
+                        "Institution"),
+                BorderFactory.createEmptyBorder(10,10,10,10)));
+
+        status = new JLabel("Institution name:");
+        status.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leftPanel.add(status);
+
+        inputGUI = new JTextArea();
+        leftPanel.add(inputGUI);
+
+        advanceButton = new JButton("Enter");
+        advanceButton.setAlignmentX(SwingConstants.CENTER);
+        advanceButton.setActionCommand("name");
+        leftPanel.add(advanceButton);
+
+        leftPanel.add(Box.createRigidArea(new Dimension(0,10)));
+        add(leftPanel);
+
+        advanceButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (e.getActionCommand().equals("name")) {
+                    inst = new Institution(inputGUI.getText(), observer);
+                    setTitle(inputGUI.getText());
+                    status.setText("Do something:");
+                    inputGUI.setText("");
+                    advanceButton.setActionCommand("input");
+                    try {
+                        inst.load("data.txt");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    } catch (MaxCapacityException ex) {
+                        ex.printStackTrace();
+                    }
+                } else if (e.getActionCommand().equals("input")) {
+                    guiRun1(inputGUI.getText().toLowerCase());
+                } else if (e.getActionCommand().equals("add")) {
+                    guiAdd();
+                }
+            }
+        });
+
+        pack();
+        setVisible(true);
         input = "";
         scanner = new Scanner(System.in);
         System.out.println("Institution name:");
         inst = new Institution(scanner.nextLine(), observer);
         flag = true;
+    }
+
+    public void guiAdd() {
+        JFrame window = new JFrame();
+        window.setMinimumSize(new Dimension(200, 100));
+        window.setLocationRelativeTo(null);
+        JTextArea input1 = new JTextArea(0, 30);
+        JTextArea input2 = new JTextArea();
+        JTextArea input3 = new JTextArea();
+        window.add(new JLabel("First name:"), BorderLayout.PAGE_START);
+        window.add(input1,BorderLayout.PAGE_END);
+        window.add(new JLabel("Last name:"), BorderLayout.PAGE_START);
+        window.add(input2, BorderLayout.PAGE_END);
+        //window.add(new JLabel("Subject:"), BorderLayout.AFTER_LAST_LINE);
+        //window.add(input3, BorderLayout.AFTER_LAST_LINE);
+        window.pack();
+        window.setVisible(true);
+    }
+
+    public void guiRun1(String str) {
+        if (str.equals("stop")) {
+            displayMsg("Stopping!");
+            try {
+                inst.save("data.txt");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } else if (str.equals("add")) {
+            inputGUI.setText("");
+            status.setText("Add What?");
+            advanceButton.setActionCommand("add");
+        }
+    }
+
+//    // EFFECTS: reads user input to perform tasks
+//    public void run(Institution i) throws IOException, InvPersonException, InvOptionException,
+//            MaxCapacityException, InvSubjectException {
+//        System.out.println("\nDo something:");
+//        input = scanner.nextLine().toLowerCase();
+//        if (input.equals("stop")) {
+//            i.save("data.txt");
+//            flag = false;
+//        } else if (input.equals("remove")) {
+//            remove();
+//        } else if (input.equals("info")) {
+//            info();
+//        } else if (input.equals("fire")) {
+//            i.fire();
+//        } else if (input.equals("add")) {
+//            add();
+//        } else {
+//            throw new InvOptionException();
+//        }
+//    }
+
+    private void displayMsg(String str) {
+        JFrame window = new JFrame("Message");
+        JLabel msg = new JLabel(str);
+        window.setMinimumSize(new Dimension(200, 100));
+        window.add(msg, BorderLayout.CENTER);
+        window.pack();
+        window.setVisible(true);
+        window.setLocationRelativeTo(null);
+        if (str.equals("Stopping!")) {
+            window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        }
+        inputGUI.setText("");
     }
 
     // MODIFIES: this
@@ -99,10 +228,10 @@ public class InstitutionRun extends JFrame {
     }
 
     // EFFECTS: reads user input to perform tasks
-    public void run(Institution i) throws IOException, InvPersonException, InvOptionException,
+    public void run(Institution i, String in) throws IOException, InvPersonException, InvOptionException,
             MaxCapacityException, InvSubjectException {
         System.out.println("\nDo something:");
-        input = scanner.nextLine().toLowerCase();
+        input = in.toLowerCase();
         if (input.equals("stop")) {
             i.save("data.txt");
             flag = false;
@@ -123,19 +252,19 @@ public class InstitutionRun extends JFrame {
         WebMessage web = new WebMessage();
         web.welcome();
         InstitutionMonitor observer = new InstitutionMonitor();
-        InstitutionRun ins = new InstitutionRun("Institution", observer);
-        ins.inst.load("data.txt");
-        while (ins.flag) {
-            try {
-                ins.run(ins.inst);
-            } catch (MaxCapacityException e) {
-                System.out.println("Capacity maxed!");
-            } catch (InvSubjectException e) {
-                System.out.println("No professors for subject!");
-            } catch (Exception e) {
-                System.out.println("Invalid option!");
-            }
-        }
+        InstitutionRun ins = new InstitutionRun(observer);
+//        ins.inst.load("data.txt");
+//        while (ins.flag) {
+//            try {
+//                ins.run(ins.inst);
+//            } catch (MaxCapacityException e) {
+//                System.out.println("Capacity maxed!");
+//            } catch (InvSubjectException e) {
+//                System.out.println("No professors for subject!");
+//            } catch (Exception e) {
+//                System.out.println("Invalid option!");
+//            }
+//        }
         ins.inst.printPopulation();
         observer.printStats();
     }
