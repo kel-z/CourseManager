@@ -11,14 +11,17 @@ public abstract class Person {
         this.isSleeping = false;
     }
 
+    // EFFECTS: prints out a greeting
     public abstract String greet();
 
+    // EFFECTS: prints out a goodbye
     public String goodbye() {
         String goodbye = "I'll see you later";
         System.out.println(goodbye);
         return goodbye;
     }
 
+    // EFFECTS: sets person to sleep
     public abstract void sleep();
 
     // getter

@@ -70,24 +70,45 @@ public class Institution extends Observable {
         return true;
     }
 
-    // EFFECTS: print out the names of everyone in population
-    public boolean printPopulation() {
+//    // EFFECTS: print out the names of everyone in population
+//    public boolean printPopulation() {
+//        int i = 1;
+//        System.out.println("\nInstitution population: " + size());
+//        System.out.println("Students:");
+//        for (Student p:studPopulation) {
+//            System.out.println(i + ". " + p);
+//            i++;
+//        }
+//        i = 1;
+//        System.out.println("Staff:");
+//        for (Subject s : subjects) {
+//            for (Professor p : subjectList.get(s)) {
+//                System.out.println(i + ". " + p);
+//                i++;
+//            }
+//        }
+//        return true;
+//    }
+
+    // EFFECTS: return the names of everyone in population
+    public String printPopulation() {
+        String str = "<html>";
         int i = 1;
-        System.out.println("\nInstitution population: " + size());
-        System.out.println("Students:");
+        str += ("Institution population: " + size() + "<br/><br/>");
+        str += ("Students: <br/>");
         for (Student p:studPopulation) {
-            System.out.println(i + ". " + p);
+            str += (i + ". " + p + "<br/>");
             i++;
         }
         i = 1;
-        System.out.println("Staff:");
+        str += ("<br/>Staff: <br/>");
         for (Subject s : subjects) {
             for (Professor p : subjectList.get(s)) {
-                System.out.println(i + ". " + p);
+                str += (i + ". " + p + "<br/>");
                 i++;
             }
         }
-        return true;
+        return str;
     }
 
     // EFFECTS: return total population
@@ -170,24 +191,26 @@ public class Institution extends Observable {
     // REQUIRES: no professor has the same first name
     // MODIFIES: this
     // EFFECTS: removes professor given first name
-    public void removeProf(String fn) throws InvPersonException {
+    public String removeProf(String fn) throws InvPersonException {
         for (Subject s : subjects) {
             ArrayList<Professor> profs = subjectList.get(s);
             for (Professor p : profs) {
                 if (p.firstName.toLowerCase().equals(fn.toLowerCase())) {
-                    System.out.println((p.getSubject().numProfs() - 1) + " people teach "
+                    System.out.println((p.getSubject().numProfs() - 1) + " prof(s) teach "
                             + p.getSubject().getSubject().toLowerCase() + " now.");
                     profs.remove(p);
                     s.removeProf(p);
                     setChanged();
                     notifyObservers("removeP");
-                    return;
+                    return (p.getSubject().numProfs() - 1) + " prof(s) teach "
+                            + p.getSubject().getSubject().toLowerCase() + " now.";
                 }
             }
         }
         throw new InvPersonException();
     }
 
+    // EFFECTS: returns subject class with the name sub
     public Subject subjectGet(String sub) {
         for (Subject s : subjects) {
             if (s.getSubject().toLowerCase().equals(sub.toLowerCase())) {

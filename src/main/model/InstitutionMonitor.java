@@ -9,9 +9,9 @@ public class InstitutionMonitor implements Observer {
     private int removeProf = 0;
 
     public InstitutionMonitor() {
-
     }
 
+    // EFFECTS: prints out the stats collected
     public void printStats() {
         System.out.println();
         System.out.println("Students added: " + addedStud);
@@ -19,6 +19,8 @@ public class InstitutionMonitor implements Observer {
         System.out.println("Professors removed: " + removeProf);
     }
 
+    // MODIFIES: this
+    // EFFECTS: increment respective counter every time population is changed
     @Override
     public void update(Observable o, Object arg) {
         System.out.println("***population change***");

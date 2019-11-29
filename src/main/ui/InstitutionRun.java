@@ -10,6 +10,8 @@ import model.InstitutionMonitor;
 import model.Subject;
 import network.WebMessage;
 
+import static java.lang.Double.parseDouble;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -28,124 +30,248 @@ public class InstitutionRun extends JFrame {
     private JLabel status;
     private JButton advanceButton;
 
-    private JPanel leftPanel;
+    private JPanel start;
+
+    private JFrame main;
 
     public InstitutionRun(InstitutionMonitor observer) {
         super("Institution");
         setMinimumSize(new Dimension(500, 100));
-
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));
-        leftPanel.setBorder(BorderFactory.createCompoundBorder(
+        start = new JPanel();
+        start.setLayout(new BoxLayout(start, BoxLayout.PAGE_AXIS));
+        start.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
                         "Institution"),
                 BorderFactory.createEmptyBorder(10,10,10,10)));
-
         status = new JLabel("Institution name:");
         status.setAlignmentX(Component.CENTER_ALIGNMENT);
-        leftPanel.add(status);
-
+        start.add(status);
         inputGUI = new JTextArea();
-        leftPanel.add(inputGUI);
-
+        start.add(inputGUI);
         advanceButton = new JButton("Enter");
         advanceButton.setAlignmentX(SwingConstants.CENTER);
         advanceButton.setActionCommand("name");
-        leftPanel.add(advanceButton);
+        start.add(advanceButton);
 
-        leftPanel.add(Box.createRigidArea(new Dimension(0,10)));
-        add(leftPanel);
+        start.add(Box.createRigidArea(new Dimension(0,10)));
+        add(start);
+
+        main = new JFrame("Institution");
+        main.setMinimumSize(new Dimension(400, 150));
+        main.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        main.setLocationRelativeTo(null);
+        main.getContentPane().setLayout(new BoxLayout(main.getContentPane(), BoxLayout.Y_AXIS));
+
+        JButton info = new JButton("Info");
+        info.setAlignmentX(Component.CENTER_ALIGNMENT);
+        info.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayMsg(inst.printPopulation());
+            }
+        });
+        main.add(info);
+        JButton addS = new JButton("Add Student");
+        addS.setAlignmentX(Component.CENTER_ALIGNMENT);
+        addS.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                guiAddS();
+            }
+        });
+        main.add(addS);
+        JButton addP = new JButton("Add Professor");
+        addP.setAlignmentX(Component.CENTER_ALIGNMENT);
+        addP.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                guiAddP();
+            }
+        });
+        main.add(addP);
+        JButton removeP = new JButton("Remove Professor");
+        removeP.setAlignmentX(Component.CENTER_ALIGNMENT);
+        removeP.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                guiRemoveP();
+            }
+        });
+        main.add(removeP);
+        JButton save = new JButton("Save");
+        save.setAlignmentX(Component.CENTER_ALIGNMENT);
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    inst.save("data.txt");
+                    displayMsg("Saved!");
+                } catch (IOException ex) {
+                    displayMsg("Error!");
+                }
+            }
+        });
+        main.add(save);
+
 
         advanceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (e.getActionCommand().equals("name")) {
+                    main.setTitle("Institution: " + inputGUI.getText());
                     inst = new Institution(inputGUI.getText(), observer);
-                    setTitle(inputGUI.getText());
-                    status.setText("Do something:");
-                    inputGUI.setText("");
-                    advanceButton.setActionCommand("input");
                     try {
                         inst.load("data.txt");
                     } catch (IOException ex) {
-                        ex.printStackTrace();
+                        displayMsg("Error!");
                     } catch (MaxCapacityException ex) {
-                        ex.printStackTrace();
+                        displayMsg("Max Capacity Error!");
                     }
-                } else if (e.getActionCommand().equals("input")) {
-                    guiRun1(inputGUI.getText().toLowerCase());
-                } else if (e.getActionCommand().equals("add")) {
-                    guiAdd();
+                    setVisible(false);
+                    main.pack();
+                    main.setVisible(true);
                 }
             }
         });
 
+
         pack();
         setVisible(true);
-        input = "";
-        scanner = new Scanner(System.in);
-        System.out.println("Institution name:");
-        inst = new Institution(scanner.nextLine(), observer);
-        flag = true;
+//        input = "";
+//        scanner = new Scanner(System.in);
+//        System.out.println("Institution name:");
+//        inst = new Institution(scanner.nextLine(), observer);
+//        flag = true;
     }
 
-    public void guiAdd() {
-        JFrame window = new JFrame();
-        window.setMinimumSize(new Dimension(200, 100));
-        window.setLocationRelativeTo(null);
-        JTextArea input1 = new JTextArea(0, 30);
-        JTextArea input2 = new JTextArea();
-        JTextArea input3 = new JTextArea();
-        window.add(new JLabel("First name:"), BorderLayout.PAGE_START);
-        window.add(input1,BorderLayout.PAGE_END);
-        window.add(new JLabel("Last name:"), BorderLayout.PAGE_START);
-        window.add(input2, BorderLayout.PAGE_END);
-        //window.add(new JLabel("Subject:"), BorderLayout.AFTER_LAST_LINE);
-        //window.add(input3, BorderLayout.AFTER_LAST_LINE);
-        window.pack();
-        window.setVisible(true);
+    // MODIFIES: removeP
+    // EFFECTS: initiates the GUI fields
+    public void initiateFieldsRP(JFrame removeP, JTextField input1) {
+        removeP.setLocationRelativeTo(null);
+        removeP.getContentPane().setLayout(new BoxLayout(removeP.getContentPane(), BoxLayout.Y_AXIS));
+        removeP.add(new JLabel("First Name:"));
+        removeP.add(input1);
     }
 
-    public void guiRun1(String str) {
-        if (str.equals("stop")) {
-            displayMsg("Stopping!");
-            try {
-                inst.save("data.txt");
-            } catch (IOException ex) {
-                ex.printStackTrace();
+    // EFFECTS: display frame for remove professor
+    public void guiRemoveP() {
+        JFrame removeP = new JFrame("Remove Professor");
+        JTextField input1 = new JTextField();
+        //main.setMinimumSize(new Dimension(200, 200));
+        initiateFieldsRP(removeP, input1);
+        JButton enter = new JButton("Remove");
+        enter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    displayMsg(inst.removeProf(input1.getText()));
+                } catch (InvPersonException ex) {
+                    displayMsg("No person exists!");
+                }
+                removeP.setVisible(false);
             }
-        } else if (str.equals("add")) {
-            inputGUI.setText("");
-            status.setText("Add What?");
-            advanceButton.setActionCommand("add");
-        }
+        });
+        removeP.add(enter);
+        removeP.pack();
+        removeP.setVisible(true);
+
     }
 
-//    // EFFECTS: reads user input to perform tasks
-//    public void run(Institution i) throws IOException, InvPersonException, InvOptionException,
-//            MaxCapacityException, InvSubjectException {
-//        System.out.println("\nDo something:");
-//        input = scanner.nextLine().toLowerCase();
-//        if (input.equals("stop")) {
-//            i.save("data.txt");
-//            flag = false;
-//        } else if (input.equals("remove")) {
-//            remove();
-//        } else if (input.equals("info")) {
-//            info();
-//        } else if (input.equals("fire")) {
-//            i.fire();
-//        } else if (input.equals("add")) {
-//            add();
-//        } else {
-//            throw new InvOptionException();
-//        }
-//    }
+    // MODIFIES: frame
+    // EFFECTS: initiates fields for add student GUI
+    public void initiateFieldsS(JFrame frame) {
+        frame.add(new JLabel("First Name:"));
+        JTextField input1 = new JTextField();
+        frame.add(input1);
+        frame.add(new JLabel("Last Name:"));
+        JTextField input2 = new JTextField();
+        frame.add(input2);
+        frame.add(new JLabel("GPA:"));
+        JTextField input3 = new JTextField();
+        frame.add(input3);
+        initiateEnterS(frame, input1, input2, input3);
+    }
 
+    // MODIFIES: frame
+    // EFFECTS: initiates the enter button for add student GUI
+    public void initiateEnterS(JFrame frame, JTextField in1, JTextField in2, JTextField in3) {
+        JButton enter = new JButton("Add");
+        enter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    inst.addStudent(in1.getText(), in2.getText(), parseDouble(in3.getText()));
+                } catch (Exception ex) {
+                    displayMsg("Error!");
+                }
+                frame.setVisible(false);
+            }
+        });
+        frame.add(enter);
+    }
+
+    // EFFECTS: display frame for add student
+    public void guiAddS() {
+        JFrame addS = new JFrame("Add Student");
+        //main.setMinimumSize(new Dimension(200, 200));
+        addS.setLocationRelativeTo(null);
+        addS.getContentPane().setLayout(new BoxLayout(addS.getContentPane(), BoxLayout.Y_AXIS));
+        initiateFieldsS(addS);
+        addS.pack();
+        addS.setVisible(true);
+    }
+
+    // EFFECTS: display frame for add student
+    public void guiAddP() {
+        JFrame addP = new JFrame("Add Professor");
+        //main.setMinimumSize(new Dimension(200, 200));
+        addP.setLocationRelativeTo(null);
+        addP.getContentPane().setLayout(new BoxLayout(addP.getContentPane(), BoxLayout.Y_AXIS));
+        initiateFieldsP(addP);
+        addP.pack();
+        addP.setVisible(true);
+    }
+
+    // MODIFIES: frame
+    // EFFECTS: initiates fields for add professor GUI
+    public void initiateFieldsP(JFrame frame) {
+        frame.add(new JLabel("First Name:"));
+        JTextField input1 = new JTextField();
+        frame.add(input1);
+        frame.add(new JLabel("Last Name:"));
+        JTextField input2 = new JTextField();
+        frame.add(input2);
+        frame.add(new JLabel("Subject:"));
+        JTextField input3 = new JTextField();
+        frame.add(input3);
+        initiateEnterP(frame, input1, input2, input3);
+    }
+
+    // MODIFIES: frame
+    // EFFECTS: initiates and adds the enter button for add professor GUI
+    public void initiateEnterP(JFrame frame, JTextField in1, JTextField in2, JTextField in3) {
+        JButton enter = new JButton("Add");
+        enter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    inst.addProf(in1.getText(), in2.getText(), inst.subjectGet(in3.getText()));
+                } catch (MaxCapacityException ex) {
+                    displayMsg("Max Capacity!");
+                }
+                frame.setVisible(false);
+            }
+        });
+        frame.add(enter);
+    }
+
+    // EFFECTS: creates a message window containing the message str
     private void displayMsg(String str) {
         JFrame window = new JFrame("Message");
+        window.setLayout(new BorderLayout(5, 5));
+
         JLabel msg = new JLabel(str);
         window.setMinimumSize(new Dimension(200, 100));
         window.add(msg, BorderLayout.CENTER);
@@ -156,6 +282,27 @@ public class InstitutionRun extends JFrame {
             window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         }
         inputGUI.setText("");
+    }
+
+    // EFFECTS: reads user input to perform tasks
+    public void run(Institution i) throws IOException, InvPersonException, InvOptionException,
+            MaxCapacityException, InvSubjectException {
+        System.out.println("\nDo something:");
+        input = scanner.nextLine().toLowerCase();
+        if (input.equals("stop")) {
+            i.save("data.txt");
+            flag = false;
+        } else if (input.equals("remove")) {
+            remove();
+        } else if (input.equals("info")) {
+            info();
+        } else if (input.equals("fire")) {
+            i.fire();
+        } else if (input.equals("add")) {
+            add();
+        } else {
+            throw new InvOptionException();
+        }
     }
 
     // MODIFIES: this
@@ -227,27 +374,6 @@ public class InstitutionRun extends JFrame {
         }
     }
 
-    // EFFECTS: reads user input to perform tasks
-    public void run(Institution i, String in) throws IOException, InvPersonException, InvOptionException,
-            MaxCapacityException, InvSubjectException {
-        System.out.println("\nDo something:");
-        input = in.toLowerCase();
-        if (input.equals("stop")) {
-            i.save("data.txt");
-            flag = false;
-        } else if (input.equals("remove")) {
-            remove();
-        } else if (input.equals("info")) {
-            info();
-        } else if (input.equals("fire")) {
-            i.fire();
-        } else if (input.equals("add")) {
-            add();
-        } else {
-            throw new InvOptionException();
-        }
-    }
-
     public static void main(String[] args) throws IOException, MaxCapacityException {
         WebMessage web = new WebMessage();
         web.welcome();
@@ -265,7 +391,7 @@ public class InstitutionRun extends JFrame {
 //                System.out.println("Invalid option!");
 //            }
 //        }
-        ins.inst.printPopulation();
-        observer.printStats();
+//        ins.inst.printPopulation();
+//        observer.printStats();
     }
 }

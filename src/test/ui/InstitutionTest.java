@@ -119,10 +119,10 @@ class InstitutionTest {
         }
     }
 
-    @Test
-    public void testPrintPopulation() {
-        assertTrue(inst.printPopulation());
-    }
+//    @Test
+//    public void testPrintPopulation() {
+//        assertTrue(inst.printPopulation());
+//    }
 
     @Test
     public void testSave() throws IOException, MaxCapacityException {
