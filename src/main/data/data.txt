@@ -3,4 +3,5 @@ STUD Mmm Mmm 5.0
 PROF Cc Cc Math
 PROF Aa Bb Math
 PROF Dd Dd Math
+PROF Gg Gg Math
 PROF Bb Bb English

@@ -9,17 +9,19 @@ import model.InstitutionMonitor;
 import model.Subject;
 import network.WebMessage;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.Observer;
 import java.util.Scanner;
 
-public class InstitutionRun {
+public class InstitutionRun extends JFrame {
     Scanner scanner;
     String input;
     Institution inst;
     Boolean flag;
 
-    public InstitutionRun(InstitutionMonitor observer) {
+    public InstitutionRun(String title, InstitutionMonitor observer) {
+        super(title);
         input = "";
         scanner = new Scanner(System.in);
         System.out.println("Institution name:");
@@ -121,7 +123,7 @@ public class InstitutionRun {
         WebMessage web = new WebMessage();
         web.welcome();
         InstitutionMonitor observer = new InstitutionMonitor();
-        InstitutionRun ins = new InstitutionRun(observer);
+        InstitutionRun ins = new InstitutionRun("Institution", observer);
         ins.inst.load("data.txt");
         while (ins.flag) {
             try {
