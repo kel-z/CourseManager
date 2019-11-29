@@ -191,10 +191,10 @@ public class InstitutionRun extends JFrame {
         initiateFieldsRP(removeP, input1);
         JButton enter = new JButton("Remove");
         enter.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     displayMsg(inst.removeProf(input1.getText()));
+                    playSound();
                 } catch (InvPersonException ex) {
                     displayMsg("No person exists!");
                 }
