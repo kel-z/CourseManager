@@ -9,6 +9,7 @@ public class WebMessage {
     public WebMessage(){
 
     }
+
     // EFFECTS: prints out string from web
     public void welcome() throws IOException {
         // as instructed, code quoted from: http://zetcode.com/articles/javareadwebpage/
