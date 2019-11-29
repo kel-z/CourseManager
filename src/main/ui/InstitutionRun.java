@@ -9,15 +9,22 @@ import model.Institution;
 import model.InstitutionMonitor;
 import model.Subject;
 import network.WebMessage;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 import static java.lang.Double.parseDouble;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Observer;
 import java.util.Scanner;
 
@@ -71,6 +78,7 @@ public class InstitutionRun extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 displayMsg(inst.printPopulation());
+                playSound();
             }
         });
         main.add(info);
@@ -80,6 +88,7 @@ public class InstitutionRun extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 guiAddS();
+                playSound();
             }
         });
         main.add(addS);
@@ -89,6 +98,7 @@ public class InstitutionRun extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 guiAddP();
+                playSound();
             }
         });
         main.add(addP);
@@ -98,6 +108,7 @@ public class InstitutionRun extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 guiRemoveP();
+                playSound();
             }
         });
         main.add(removeP);
@@ -109,6 +120,7 @@ public class InstitutionRun extends JFrame {
                 try {
                     inst.save("data.txt");
                     displayMsg("Saved!");
+                    playSound();
                 } catch (IOException ex) {
                     displayMsg("Error!");
                 }
@@ -119,7 +131,7 @@ public class InstitutionRun extends JFrame {
 
         advanceButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (e.getActionCommand().equals("name")) {
+                if (e.getActionCommand().equals("name") && !inputGUI.getText().equals("")) {
                     main.setTitle("Institution: " + inputGUI.getText());
                     inst = new Institution(inputGUI.getText(), observer);
                     try {
@@ -129,6 +141,7 @@ public class InstitutionRun extends JFrame {
                     } catch (MaxCapacityException ex) {
                         displayMsg("Max Capacity Error!");
                     }
+                    playSound();
                     setVisible(false);
                     main.pack();
                     main.setVisible(true);
@@ -144,6 +157,21 @@ public class InstitutionRun extends JFrame {
 //        System.out.println("Institution name:");
 //        inst = new Institution(scanner.nextLine(), observer);
 //        flag = true;
+    }
+
+    // EFFECTS: plays sound
+    public void playSound() {
+        InputStream music;
+        File pop = new File(".\\src\\main\\sound\\hmm_01.wav");
+        try {
+            music = new FileInputStream(pop);
+            AudioStream audio = new AudioStream(music);
+            AudioPlayer.player.start(audio);
+        } catch (Exception e) {
+            displayMsg("Sound Error!");
+            System.out.println(e);
+        }
+
     }
 
     // MODIFIES: removeP
@@ -203,6 +231,7 @@ public class InstitutionRun extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     inst.addStudent(in1.getText(), in2.getText(), parseDouble(in3.getText()));
+                    playSound();
                 } catch (Exception ex) {
                     displayMsg("Error!");
                 }
@@ -258,8 +287,9 @@ public class InstitutionRun extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     inst.addProf(in1.getText(), in2.getText(), inst.subjectGet(in3.getText()));
-                } catch (MaxCapacityException ex) {
-                    displayMsg("Max Capacity!");
+                    playSound();
+                } catch (Exception ex) {
+                    displayMsg("Error!");
                 }
                 frame.setVisible(false);
             }
