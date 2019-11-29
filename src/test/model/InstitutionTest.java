@@ -1,4 +1,4 @@
-package ui;
+package model;
 
 import exceptions.InvPersonException;
 import exceptions.InvSubjectException;

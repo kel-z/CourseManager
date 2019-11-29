@@ -1,4 +1,4 @@
-package ui;
+package model;
 
 import model.FireAlarm;
 import org.junit.jupiter.api.BeforeEach;

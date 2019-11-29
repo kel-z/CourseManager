@@ -1,4 +1,4 @@
-package ui;
+package model;
 
 import model.UniversityStudent;
 import org.junit.jupiter.api.BeforeEach;
