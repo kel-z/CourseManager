@@ -4,13 +4,11 @@ import exceptions.InvOptionException;
 import exceptions.InvPersonException;
 import exceptions.InvSubjectException;
 import exceptions.MaxCapacityException;
-import javafx.scene.layout.BorderPaneBuilder;
+//import javafx.scene.layout.BorderPaneBuilder;
 import model.Institution;
 import model.InstitutionMonitor;
 import model.Subject;
 import network.WebMessage;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
 
 import static java.lang.Double.parseDouble;
 
@@ -33,6 +31,7 @@ public class InstitutionRun extends JFrame {
     String input;
     Institution inst;
     Boolean flag;
+
     private JTextArea inputGUI;
     private JLabel status;
     private JButton advanceButton;
@@ -165,8 +164,8 @@ public class InstitutionRun extends JFrame {
         File pop = new File(".\\src\\main\\sound\\hmm_01.wav");
         try {
             music = new FileInputStream(pop);
-            AudioStream audio = new AudioStream(music);
-            AudioPlayer.player.start(audio);
+            //AudioStream audio = new AudioStream(music);
+            //AudioPlayer.player.start(audio);
         } catch (Exception e) {
             displayMsg("Sound Error!");
             System.out.println(e);
@@ -208,21 +207,6 @@ public class InstitutionRun extends JFrame {
     }
 
     // MODIFIES: frame
-    // EFFECTS: initiates fields for add student GUI
-    public void initiateFieldsS(JFrame frame) {
-        frame.add(new JLabel("First Name:"));
-        JTextField input1 = new JTextField();
-        frame.add(input1);
-        frame.add(new JLabel("Last Name:"));
-        JTextField input2 = new JTextField();
-        frame.add(input2);
-        frame.add(new JLabel("GPA:"));
-        JTextField input3 = new JTextField();
-        frame.add(input3);
-        initiateEnterS(frame, input1, input2, input3);
-    }
-
-    // MODIFIES: frame
     // EFFECTS: initiates the enter button for add student GUI
     public void initiateEnterS(JFrame frame, JTextField in1, JTextField in2, JTextField in3) {
         JButton enter = new JButton("Add");
@@ -250,6 +234,21 @@ public class InstitutionRun extends JFrame {
         initiateFieldsS(addS);
         addS.pack();
         addS.setVisible(true);
+    }
+
+    // MODIFIES: frame
+    // EFFECTS: initiates fields for add student GUI
+    public void initiateFieldsS(JFrame frame) {
+        frame.add(new JLabel("First Name:"));
+        JTextField input1 = new JTextField();
+        frame.add(input1);
+        frame.add(new JLabel("Last Name:"));
+        JTextField input2 = new JTextField();
+        frame.add(input2);
+        frame.add(new JLabel("GPA:"));
+        JTextField input3 = new JTextField();
+        frame.add(input3);
+        initiateEnterS(frame, input1, input2, input3);
     }
 
     // EFFECTS: display frame for add student
@@ -314,26 +313,26 @@ public class InstitutionRun extends JFrame {
         inputGUI.setText("");
     }
 
-    // EFFECTS: reads user input to perform tasks
-    public void run(Institution i) throws IOException, InvPersonException, InvOptionException,
-            MaxCapacityException, InvSubjectException {
-        System.out.println("\nDo something:");
-        input = scanner.nextLine().toLowerCase();
-        if (input.equals("stop")) {
-            i.save("data.txt");
-            flag = false;
-        } else if (input.equals("remove")) {
-            remove();
-        } else if (input.equals("info")) {
-            info();
-        } else if (input.equals("fire")) {
-            i.fire();
-        } else if (input.equals("add")) {
-            add();
-        } else {
-            throw new InvOptionException();
-        }
-    }
+//    // EFFECTS: reads user input to perform tasks
+//    public void run(Institution i) throws IOException, InvPersonException, InvOptionException,
+//            MaxCapacityException, InvSubjectException {
+//        System.out.println("\nDo something:");
+//        input = scanner.nextLine().toLowerCase();
+//        if (input.equals("stop")) {
+//            i.save("data.txt");
+//            flag = false;
+//        } else if (input.equals("remove")) {
+//            remove();
+//        } else if (input.equals("info")) {
+//            info();
+//        } else if (input.equals("fire")) {
+//            i.fire();
+//        } else if (input.equals("add")) {
+//            add();
+//        } else {
+//            throw new InvOptionException();
+//        }
+//    }
 
     // MODIFIES: this
     // EFFECTS: takes user input to add a professor
@@ -361,52 +360,54 @@ public class InstitutionRun extends JFrame {
         inst.addStudent(firstName, lastName, gpa);
     }
 
-    // MODIFIES: inst
-    // EFFECTS: takes user input to specify person to add to population
-    public boolean add() throws InvPersonException, MaxCapacityException {
-        System.out.println("\nAdd what?");
-        input = scanner.nextLine().toLowerCase();
-        if (input.equals("student")) {
-            addStud();
-        } else if (input.equals("professor")) {
-            addProf();
-        } else {
-            throw new InvPersonException();
-        }
-        return true;
-    }
+//    // MODIFIES: inst
+//    // EFFECTS: takes user input to specify person to add to population
+//    public boolean add() throws InvPersonException, MaxCapacityException {
+//        System.out.println("\nAdd what?");
+//        input = scanner.nextLine().toLowerCase();
+//        if (input.equals("student")) {
+//            addStud();
+//        } else if (input.equals("professor")) {
+//            addProf();
+//        } else {
+//            throw new InvPersonException();
+//        }
+//        return true;
+//    }
+//
+//    // MODIFIES: inst
+//    // EFFECTS: takes user input to specify remove
+//    public void remove() throws InvPersonException, InvOptionException {
+//        System.out.println("\nRemove what?");
+//        input = scanner.nextLine().toLowerCase();
+//        if (input.equals("professor")) {
+//            System.out.println("\nRemove who? (first name)");
+//            input = scanner.nextLine().toLowerCase();
+//            inst.removeProf(input);
+//        } else {
+//            throw new InvOptionException();
+//        }
+//    }
 
-    public void remove() throws InvPersonException, InvOptionException {
-        System.out.println("\nRemove what?");
-        input = scanner.nextLine().toLowerCase();
-        if (input.equals("professor")) {
-            System.out.println("\nRemove who? (first name)");
-            input = scanner.nextLine().toLowerCase();
-            inst.removeProf(input);
-        } else {
-            throw new InvOptionException();
-        }
-    }
-
-    // MODIFIES: inst
-    // EFFECTS: takes user input to get info
-    public void info() throws InvSubjectException, InvOptionException {
-        System.out.println("\nGet what?");
-        input = scanner.nextLine().toLowerCase();
-        if (input.equals("info")) {
-            System.out.println(inst);
-        } else if (input.equals("subject")) {
-            System.out.println("\nWhich subject?");
-            input = scanner.nextLine();
-            inst.getSubjectList(input);
-        } else {
-            throw new InvOptionException();
-        }
-    }
+//    // MODIFIES: inst
+//    // EFFECTS: takes user input to get info
+//    public void info() throws InvSubjectException, InvOptionException {
+//        System.out.println("\nGet what?");
+//        input = scanner.nextLine().toLowerCase();
+//        if (input.equals("info")) {
+//            System.out.println(inst);
+//        } else if (input.equals("subject")) {
+//            System.out.println("\nWhich subject?");
+//            input = scanner.nextLine();
+//            inst.getSubjectList(input);
+//        } else {
+//            throw new InvOptionException();
+//        }
+//    }
 
     public static void main(String[] args) throws IOException, MaxCapacityException {
-        WebMessage web = new WebMessage();
-        web.welcome();
+        //WebMessage web = new WebMessage();
+        //web.welcome();
         InstitutionMonitor observer = new InstitutionMonitor();
         InstitutionRun ins = new InstitutionRun(observer);
 //        ins.inst.load("data.txt");
